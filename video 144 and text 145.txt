@@ -1,0 +1,97 @@
+Video 144 and text 145
+
+1.-Crearemos una nueva tabla:
+rails generate migration create_article_categories
+y podemos checarlo en db/migrate y ahi mismo pondremos los atributos
+t.integer :article_id
+t.integer :category_id
+*pondremos rake db:migrate en consola para que se creen nuestras tablas.
+
+2.-Ahora crearemos un archivo en models (se hace cada que creas una tabla, si no marca error), con el nombre de nuestra tabla article_category.rb
+Y dentro pondremos:
+
+class ArticleCategory < ActiveRecord::Base
+
+end
+
+3.-Nos vamos a la consola en la terminar y verificamos que nuestra tabla se  creo con :
+ArticleCategory.all and ArticleCategory
+y salimos de la consola.
+
+4.-Nos regresaremos al models que creamos y podremos dentro
+belongs_to :article
+belongs_to :category
+
+5.-Noa iremos a models/article.rb lo abromos y despues de belongs pondremos
+has_many :article_categories
+has_many :categories, through: :article_categories
+
+6.-Ahora iremos a category.rb y pondremos
+has_many :article_categories
+has_many :articles, through: :article_categories
+
+Y nos vamos a la consola!
+pondremos article = Article.last
+y article.categories y veremos como se hace un inner join de las tablas y checamos al revs tambien
+category = Category.first
+category.articles y vemos como hace un inner join
+
+Nota: checar la parte final de las instrucciones.
+
+--------------------------------------------------------------------
+To generate a migration file to create the article_categories table:
+
+rails generate migration create_article_categories
+
+Within the migration file add in the following to add article_id and category_id to the table:
+
+t.integer :article_id
+
+t.integer :category_id
+
+Run rake db:migrate to create the table:
+
+rake db:migrate
+
+Create a model file named article_category.rb under the app/models folder and fill it in:
+
+class ArticleCategory < ActiveRecord::Base
+
+belongs_to :article
+
+belongs_to :category
+
+end
+
+Update the article.rb and category.rb model files to include the following lines:
+
+article.rb ->
+
+has_many :article_categories
+
+has_many :categories, through: :article_categories
+
+category.rb ->
+
+has_many :article_categories
+
+has_many :articles, through: :article_categories
+
+Then hop on the rails console and test out the associations:
+
+ArticleCategory.all
+
+ArticleCategory
+
+article = Article.last
+
+category = Category.last
+
+article.categories
+
+article.categories << category
+
+category.articles
+
+category.articles << article
+

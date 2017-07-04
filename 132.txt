@@ -1,0 +1,261 @@
+Video 132  ian.rodriguez.sonatas.mx
+
+1.-Nos iremos a test/integration y crearemos un file
+que se llame: create_categories_test.rb
+y pondremos
+require 'test_helper'
+
+class CreateCategoriesTest < ActionDispatch::IntegrationTest
+    test "get new category form and create category" do 
+  	get new_category_path
+  	assert_template 'categories/new' 
+  	assert_difference 'Category.count', 1 do 
+  		post_via_redirect categories_path, category: {name: "sports"}
+  	end
+  	assert_template 'categories/index'
+  	assert_match "sports", response.body 
+
+end
+
+2.-Accedemos a categories_controller y ponemos :
+
+def create
+
+end
+
+
+3.-Nos vamos a view/categories/new y ponemos:
+
+<h1 align = "center">Create new category</h1>
+
+<%= render 'shared/errors', obj: @category %>
+
+      <%= form_for(@category, :html => {class: "form-horizontal", role: "form"}) do |f| %>
+      <div class="form-group">
+	      <div class="control-label col-sm-2">
+
+	          <%= f.label :name %>
+          </div>
+           <div class="col-sm-8">
+	         <%= f.text_field :name, class: "form-control", placeholder: "Category name", autofocus: true %>
+          </div>
+     </div>
+
+	  <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+            <%= f.submit class: 'btn btn-primary btn-lg'%>
+            </div>
+         </div>
+	
+         <% end %>
+
+         <div class="col-xs-8 xol-xs-offset-20">
+
+		[<%= link_to "Cancel request and returno to articles listing", articles_path %>]
+        </div>
+
+
+4.-Nos vamos a categories_controller.rb y poneoms en new:
+@category = Category.new
+  def index
+
+  end
+
+  def new
+  	@category = Category.new
+
+  end
+
+  def create
+  	@category = Category.new(category_params)
+  	if @category.save
+  		flahs[:success] = "Category was created successfully"
+  		redirect_to categories_path
+
+  	else
+  		render 'new'
+  	end
+  	
+  end
+
+
+  def show
+
+  end
+
+  private
+  def category_params
+  	params.require(:category).permit(:name)
+  end
+
+end
+
+
+5.-Nota 
+redirect_to categories_path 
+nos redirige a la pagina principal de catgorias
+
+6.-Nos iremos a views/categories/index y pondremos 
+
+<h1 align="center">Listing All Categories</h1>
+<% @categories.each do |category| %>
+	<ul class="listing">
+	  <div class="row">
+		<div class="well col-md-4 col-md-offset-4">
+		  <li class="articles-title">
+		  	<%= link_to "#{category.name}", category_path(category) %>
+		  </li>
+		</div>
+	</div>
+</ul>
+
+
+-----------------------------------------------------------------------
+Section 7, Lecture 133
+Under test/integration folder create a file named create_categories_test.rb which will be the integration test for creating categories and fill it in with the following:
+
+require 'test_helper'
+
+class CreateCategoriesTest < ActionDispatch::IntegrationTest
+
+test "get new category form and create category" do
+
+get new_category_path
+
+assert_template 'categories/new'
+
+assert_difference 'Category.count', 1 do
+
+post_via_redirect categories_path, category: {name: "sports"}
+
+end
+
+assert_template 'categories/index'
+
+assert_match "sports", response.body
+
+end
+
+end
+
+Fill in the new.html.erb template under the app/views/categories folder:
+
+<h1 align="center">Create new category</h1>
+
+<%= render 'shared/errors', obj: @category %>
+
+<%= form_for(@category, :html => {class: "form-horizontal", role: "form"}) do |f| %>
+
+<div class="form-group">
+
+<div class="control-label col-sm-2">
+
+<%= f.label :name %>
+
+</div>
+
+<div class="col-sm-8">
+
+<%= f.text_field :name, class: "form-control", placeholder: "Category name", autofocus: true %>
+
+</div>
+
+</div>
+
+<div class="form-group">
+
+<div class="col-sm-offset-2 col-sm-10">
+
+<%= f.submit class: 'btn btn-primary btn-lg' %>
+
+</div>
+
+</div>
+
+<% end %>
+
+<div class="col-xs-4 col-xs-offset-4">
+
+[ <%= link_to "Cancel request and return to articles listing", articles_path %> ]
+
+</div>
+
+Fill in the code in the categories_controller.rb file under the app/controllers folder:
+
+class CategoriesController < ApplicationController
+
+def index
+
+@categories = Category.all
+
+end
+
+def new
+
+@category = Category.new
+
+end
+
+def create
+
+@category = Category.new(category_params)
+
+if @category.save
+
+flash[:success] = "Category was created successfully"
+
+redirect_to categories_path
+
+else
+
+render 'new'
+
+end
+
+end
+
+def show
+
+end
+
+private
+
+def category_params
+
+params.require(:category).permit(:name)
+
+end
+
+end
+
+Fill in the categories index.html.erb view under the app/views/categories page:
+
+<h1 align="center">Listing All Categories</h1>
+
+<div align="center">
+
+<% @categories.each do |category| %>
+
+<ul class="listing">
+
+<div class="row">
+
+<div class="well col-md-4 col-md-offset-4">
+
+<li class="article-title">
+
+<%= link_to "#{category.name}", category_path(category) %>
+
+</li>
+
+</div>
+
+</div>
+
+</ul>
+
+<% end %>
+
+</div>
+
+

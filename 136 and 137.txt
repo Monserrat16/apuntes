@@ -1,0 +1,108 @@
+136 and 137
+1.- Crearemos un nuevo archivo en test/integration 
+y se llamara: list_categories_test.rb y dentro pondremos:
+require 'test_helper'
+
+class CreateCategoriesTest < ActionDispatch::IntegrationTest
+
+     def setup
+      @category = Category.create(name: "sports")
+      @category2 = Category.create(name: "Programming")
+  end
+
+
+  test "should show categories listing" do
+    get categories_path
+    assert_template 'categories/index'
+    assert_select "a[href=?]", category_path(@category), text: @category.name
+    assert_select "a[href=?]", category_path(@category), text: @category2.name
+
+end
+
+2.-Del mismo archivo cambiaremos sports por cualquier otra categoria ya que en create_Categories
+tambien esta sports, entonces se crea una redundancia 
+
+3.-Ahora nos iremos a views/categories/index y agregaremos unas lineas al
+archivoen la tercera linea agregsremos <%= will_paginate %>
+y debajo de end tambien <%= will_paginate %>
+
+4.-Ahora nos iremos a app/controller/categories_controller y modificaremos una linea
+la de index estaba asi: @categories = Category.all y quedaria asi:
+@categories = Category.paginate(page: params[:page], per_page: 5)
+
+Nota: Todo lo que hicimos en esta seccion fue para agregar los numeros para irnos a potra pagina,
+para esto antyeriormente utilizamos una gema (no recuerdo el nombre) algo de will paginate
+
+----------------------------------------------------------------------------
+Section 7, Lecture 137
+Under test/integration folder create a file named list_categories_test.rb and fill it in (Note this is the corrected version with the correct class name, in the video an error is made which is fixed in the next video):
+
+require 'test_helper'
+
+class ListCategoriesTest < ActionDispatch::IntegrationTest
+
+def setup
+
+@category = Category.create(name: "sports")
+
+@category2 = Category.create(name: "programming")
+
+end
+
+test "should show categories listing" do
+
+get categories_path
+
+assert_template 'categories/index'
+
+assert_select "a[href=?]", category_path(@category), text: @category.name
+
+assert_select "a[href=?]", category_path(@category2), text: @category2.name
+
+end
+
+end
+
+Add pagination to the app/views/categories/index.html.erb file and make it look like below:
+
+<h1 align="center">Listing All Categories</h1>
+
+<div align="center">
+
+<%= will_paginate %>
+
+<% @categories.each do |category| %>
+
+<ul class="listing">
+
+<div class="row">
+
+<div class="well col-md-4 col-md-offset-4">
+
+<li class="article-title">
+
+<%= link_to "#{category.name}", category_path(category) %>
+
+</li>
+
+<li><small><%= pluralize(category.articles.count, "article") %></small></li>
+
+</div>
+
+</div>
+
+</ul>
+
+<% end %>
+
+<%= will_paginate %>
+
+</div>
+
+Update the index action in the categories_controller.rb file to accomodate pagination:
+
+def index
+
+@categories = Category.paginate(page: params[:page], per_page: 5)
+
+end

@@ -1,0 +1,6 @@
+Chechar las paginas en casa.
+
+http://xitrus.es/blog/110/Lanza_notificaciones_con_la_API_de_HTML5
+https://developer.mozilla.org/es/docs/Web/API/notification
+https://filisantillan.com/notificaciones-web-html5/
+http://www.weblantropia.com/2016/04/26/notificaciones-navegador-html5/

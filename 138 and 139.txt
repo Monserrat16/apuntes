@@ -1,0 +1,11 @@
+video 138 and 139
+
+1.-Cambiaremos unas lineas de el archivo list_categories_test.rb
+class ListCreateCategoriesTest < ActionDispatch::IntegrationTest
+agregamos el list y en la linea donde habiamos cambiado
+sports por books, dejaremos sports
+
+
+-------------------------------------------------------------------------
+Section 7, Lecture 139
+Due to the same class name of CreateCategoriesTest, an instance variable (object) initiated in 1 test lasted the lifecycle of the object which spanned multiple files (since same class), thus causing the conflict. Correcting the class name removed the list_categories_test.rb file from being part of the CreateCategoriesTest class and the @category intance variable was no longer spanning that file (and it's tests) and promptly ended when the create_categories_test.rb file completed.

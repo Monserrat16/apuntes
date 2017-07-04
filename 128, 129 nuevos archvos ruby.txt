@@ -1,0 +1,170 @@
+Unidad 7 video 128
+
+http://rubytutorial.wikidot.com/unit-testing  checarlo en casa
+
+1.-Nos iremos a test/models y crearemos un nuevo file con nombre
+category_test.rb y dentro pondremos:
+
+require 'test_helper' // es el unico file que esta en test, test helper
+
+class CategoryTest < ActiveSupport::TestCase
+   
+   def setup   //siempre que corremos nuestro test, se correra esto
+      @category = Category.new(name: "sports") // todo lo que hagamos aqui pasara en nuestra test database
+      
+   end 
+
+   test "category should be valid" do  // checar la pagina active record assertion
+      assert @category.valid?
+
+   end 
+
+end
+
+
+2.- Ahora nos iremos a app/models/ y crearemos un nuevo file con nombre
+category.rb y dentro pondremos
+
+class Category < ActiveRecord::Base
+
+end
+
+3.-Ahora crearemos una nueva tabla en la consola con:
+rails generation migration create_categories
+y checamos en db/migrate y accedemos a la que creamos y pondremos :
+
+t.string :name
+t.timestamps
+
+y en consola ponemos rake db:migrate
+y si checamos en schema.rb podemos ver que esta nuestra tabla 
+categories.
+
+4.-Ahora nos iremos a la consola (rails console) y pondremos:
+category = Category.new(name: "sports")
+
+exit
+
+5.-Ahora seguimos modificando nuestro category_test.rb
+que se encuentra en test/models y pondremos:
+
+test "name should be present" do
+  @category.name = " "
+  assert_not @category.valid? // si esto retorta true mi test va a fallar, si no es valido va a pasar
+end
+
+
+6.-Nos iremos models/category.rb y pondremos las validaciones:
+  validates :name, presence: true
+
+7.-Regresaremos a category_test y pondremos para que el nombre sea unico
+
+  test "name should be unique" do
+     @category.save 
+     cateogry2 = Category.new(name: "sports")
+     assert_not category2.valid?
+  end
+nota: assert es como afirmar las cosas que decidas que sean ciertas
+
+8.-Nos regresaremos a category.rb
+y pondremos otra validacion:
+validates_uniqueness_of :name
+
+9.-Regresaremos a category_test.rb y pondremos
+test "name should not be too long" do // esto nos quiere decir que lo mas largo que sera nuestro nombre 
+   @category.name = "a" *26                sera de 26 caracteres
+   assert_not @category.valid?
+end
+
+test "name should not be too short" do
+   @category.name = "aa"
+   assert_not @category.valid?    //tendremos dos errores en test por que no estan en las validacines
+
+end
+
+10.-Nos iremos a category.rb para seguir poniendo las validaciones
+
+en el primero agregaremos :
+validates :name, presence: true  //agregamos aqui
+length: {minimum: 3, maximum: 25}
+
+----------------------------------------------------------------------
+Section 7, Lecture 129
+Create a category_test.rb file under test/models folder and fill it in with the following:
+
+require 'test_helper'
+
+class CategoryTest < ActiveSupport::TestCase
+
+def setup
+
+@category = Category.new(name: "sports")
+
+end
+
+test "category should be valid" do
+
+assert @category.valid?
+
+end
+
+test "name should be present" do
+
+@category.name = " "
+
+assert_not @category.valid?
+
+end
+
+test "name should be unique" do
+
+@category.save
+
+category2 = Category.new(name: "sports")
+
+assert_not category2.valid?
+
+end
+
+test "name should not be too long" do
+
+@category.name = "a" * 26
+
+assert_not @category.valid?
+
+end
+
+test "name should not be too short" do
+
+@category.name = "aa"
+
+assert_not @category.valid?
+
+end
+
+end
+
+Create a model file named category.rb under the app/models folder and fill it in:
+
+class Category < ActiveRecord::Base
+
+validates :name, presence: true, length: { minimum: 3, maximum: 25 }
+
+validates_uniqueness_of :name
+
+end
+
+To create a migration file to create the categories table:
+
+rails generate migration create_categories
+
+Then fill in the migration file within the create_table block:
+
+t.string :name
+
+t.timestamps
+
+Run the migration to create the categories table:
+
+rake db:migrate
+
